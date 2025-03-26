@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EchoAid - Speech to Text</title>
+</head>
+<body style="font-family: Arial; max-width: 600px; margin: 50px auto; text-align: center;">
+  <h1>🎤 EchoAid</h1>
+  <p>Upload a <strong>.wav</strong> file and see the transcription:</p>
+  
+  <form id="uploadForm">
+    <input type="file" id="audioFile" accept=".wav" required />
+    <br><br>
+    <button type="submit">Transcribe</button>
+  </form>
+
+  <br>
+  <h3>📝 Transcription:</h3>
+  <pre id="result"></pre>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const file = document.getElementById('audioFile').files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/transcribe/", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      result.textContent = data.transcription || data.error || "No result";
+    });
+  </script>
+</body>
+</html>
